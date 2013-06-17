@@ -89,6 +89,42 @@ class Property(object):
         if self._name is None:
             self._name = code_name
 
+    # Comparison operators on Property instances don't compare the
+    # properties; instead they return FilterNode instances that can be
+    # used in queries.  See the module docstrings above and in query.py
+    # for details on how these can be used.
+
+    def _comparison(self, op, value):
+        # TODO: cannot filter undex properties, I don't deal with indexed properties at all
+        from .query import FilterNode
+        if value is not None:
+            value = self._do_validate(value)
+        return FilterNode(self._name, op, value)
+
+    def __eq__(self, value):
+        """Return a FilterNode instance representing the '=' comparison."""
+        return self._comparison('=', value)
+
+    def __ne__(self, value):
+        """Return a FilterNode instance representing the '!=' comparison."""
+        return self._comparison('!=', value)
+
+    def __lt__(self, value):
+        """Return a FilterNode instance representing the '<' comparison."""
+        return self._comparison('<', value)
+
+    def __le__(self, value):
+        """Return a FilterNode instance representing the '<=' comparison."""
+        return self._comparison('<=', value)
+
+    def __gt__(self, value):
+        """Return a FilterNode instance representing the '>' comparison."""
+        return self._comparison('>', value)
+
+    def __ge__(self, value):
+        """Return a FilterNode instance representing the '>=' comparison."""
+        return self._comparison('>=', value)
+
     #def _serialize(self, entity):
     #    return self._get_value(entity)
 
@@ -398,6 +434,8 @@ class Model(object):
     def query(cls, *args, **kwargs):
         from .query import Query
         q = Query(kind=cls._get_kind())
+        #q = q.filter(*cls._default_filters())
+        q = q.filter(*args)
         return q
 
     def __repr__(self):

@@ -7,7 +7,9 @@ __all__ = ('backend',)
 
 class BackendProxy(object):
 
-    @cached_property
+    #@cached_property
+    # TODO: this is ok, but if i change the backend property this isn't notified
+    @property
     def _backend(self):
         if settings.BACKEND is None:
             raise KeyError, "settings missing BACKEND key"
