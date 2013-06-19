@@ -151,8 +151,11 @@ class BasicTest(BaseTest):
         self.assertEqual(id1, id2)
         x = TestRepeated.get_by_id(id2)
         self.assertEqual(x.a, lv2)
-        # test switch to tuple
+        # test always return list
         x.a = tuple(lv1)
         x.put()
         x = TestRepeated.get_by_id(id1)
-        self.assertEqual(x.a, tuple(lv1))
+        self.assertEqual(x.a, lv1)
+
+        x = TestRepeated()
+        self.assertFalse('x' in x.a)

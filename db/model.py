@@ -156,15 +156,16 @@ class Property(object):
         if self._repeated:
             if not isinstance(value, (list, tuple, set, frozenset)):
                 raise ValueError('Expected list or tuple, got %r' % (value,))
-            cls = type(value)
-            value = cls([self._do_validate(v) for v in value])
+            #cls = type(value) # combine next line with cls(...) to store value as it is set
+            value = [self._do_validate(v) for v in value] 
         else:
             if value is not None:
                 value = self._do_validate(value)
         entity._values[self._name] = value
 
     def _get_value(self, entity):
-        return entity._values.get(self._name, self._default)
+        value = entity._values.get(self._name, self._default)
+        return [] if value is None and self._repeated else value
 
     def _delete_value(self, entity):
         if self._name in entity._values:
