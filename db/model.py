@@ -438,6 +438,26 @@ class Model(object):
         q = q.filter(*args)
         return q
 
+    def populate(self, **kwargs):
+        self._set_attributes(kwargs)
+
+    def to_dict(self, include=None, exclude=None):
+        if (include is not None and 
+            not isinstance(include, (list, tuple, set, frozenset))):
+            raise TypeError('include should be a list, tuple or set')
+        if (exclude is not None and
+            not isinstance(exclude, (list, tuple, set, frozenset))):
+            raise TypeError('exclude should be a list, tuple or set')
+        values = {}
+        for prop in self._properties.itervalues():
+            name = prop._code_name
+            if include is not None and name not in include:
+                continue
+            if exclude is not None and name in exclude:
+                continue
+            values[name] = prop._get_value(self)
+        return values
+            
     def __repr__(self):
         args = []
         for prop in self._properties.itervalues():

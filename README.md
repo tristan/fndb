@@ -6,6 +6,28 @@ I wanted the interface to the Google App Engine's NDB without having to run the 
 
  * A LOT! (pretty much everything)
 
+### Ideas for things
+
+##### REST query interface
+
+Build a flask blueprint that provides wrappers for the ndb queries
+
+Get all of kind `ModelA`
+```
+GET http://rest-server/blueprint_prefix/query/ModelA
+```
+
+Get a specific ModelA
+```
+GET http://rest-server/blueprint_prefix/query/ModelA/id/
+```
+
+Get all with a composite key
+```
+GET http://rest-server/blueprint_prefix/query/Kind1/ID1/Kind2/ID2/Kind3/
+```
+
+
 ### Random thoughts
 
 I've had to change the `Model.put` and `Key.get` methods a bit too much for my liking. What I would like is to just keep the majority of the .ndb code from GAE in tact and simply have a database backend of my choosing, but the code is a bit too tied in with the database code.

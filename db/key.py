@@ -83,9 +83,18 @@ class Key(object):
         if obj is None:
             raise KeyError
         cls = model.Model._kind_map.get(self.kind())
-        kwargs = {
-            cls._properties[k]._code_name: v
-            for k,v in obj.iteritems() if v is not None}
+        expando = issubclass(cls, model.Expando)
+        kwargs = {}
+        for k,v in obj.iteritems():
+            if v is not None:
+                code_name = cls._properties.get(k)
+                if code_name is None:
+                    if not expando:
+                        raise KeyError
+                    code_name = k
+                else:
+                    code_name = cls._properties[k]._code_name
+                kwargs[code_name] = v            
         mdl = cls(key=self, **kwargs)
         return mdl
 
