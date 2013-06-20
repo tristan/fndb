@@ -78,6 +78,8 @@ class FilterNode(Node):
             return any(v >= self.__value for v in values)
         elif self.__opsymbol == '<=':
             return any(v <= self.__value for v in values)
+        elif self.__opsymbol == '__contains__':
+            return any(self.__value in v for v in values)
         raise TypeError("unexpected op symbol %s" % self.__opsymbol)
 
 class ConjunctionNode(Node):

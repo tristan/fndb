@@ -267,6 +267,7 @@ class DateTimeProperty(Property):
             self._set_value(entity, value)
 
 class TextProperty(Property):
+
     def _validate(self, value):
         if isinstance(value, str):
             # decode from utf-8
@@ -280,6 +281,11 @@ class TextProperty(Property):
             raise ValueError('%r expects string value, got %r' %
                              (self, value))
         return value
+
+    # NOTE: this is not supported by google ndb, don't use it if you want to support ndb as well!
+    def _CONTAINS(self, query):
+        return self._comparison('__contains__', query)
+        
 
 _MAX_STRING_LENGTH = 1000
 class StringProperty(TextProperty):
