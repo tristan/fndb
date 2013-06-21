@@ -1,4 +1,3 @@
-
 class BackendBase(object):
     def __init__(*args, **kwargs):
         raise NotImplementedError
@@ -11,3 +10,6 @@ class BackendBase(object):
 
     def keys(self):
         raise NotImplementedError
+
+from .proxy import BackendProxy
+backend = BackendProxy()

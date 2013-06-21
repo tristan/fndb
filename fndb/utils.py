@@ -5,11 +5,15 @@ class cached_property(object):
     property cached on the instance.
     """
     def __init__(self, func):
+        print '__init__', self, func
         self.func = func
 
     def __get__(self, instance, type=None):
+        print '__get__', self, instance, type
         if instance is None:
             return self
         res = instance.__dict__[self.func.__name__] = self.func(instance)
         return res
-        
+
+    def __invalidate(self, *args):
+        print '__inv', args

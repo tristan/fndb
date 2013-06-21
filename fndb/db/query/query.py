@@ -1,6 +1,6 @@
 
 from ..model import Key
-from fndb import backend
+from fndb.backend import backend
 from .. import model
 
 

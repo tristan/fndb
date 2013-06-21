@@ -4,7 +4,7 @@ https://developers.google.com/appengine/docs/python/ndb/entities
 """
 import base64
 import cPickle as pickle
-from fndb import backend
+from fndb.backend import backend
 
 __all__ = ['Key']
 

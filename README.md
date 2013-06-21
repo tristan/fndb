@@ -2,7 +2,46 @@
 
 I wanted the interface to the Google App Engine's NDB without having to run the GAE. Why? Because I'm weird... I'm unsure at the moment which platform I want to deploy some apps I'm working on, found the ndb model intriguing, and decided I wanted to work with it without depending on a large chunk of the GAE code (but while being able to fall back on it if I end up working on it). My hope is that if I choose something else then I can build a `Backend` to use this with it, and that this hasn't lost too much of whatever robustness and speed the ndb has.
 
-### Things not missing
+### Setup
+
+##### simplekv backend
+
+	pip install simplekv
+
+##### configure
+
+Create a config file (e.g. `settings.py`) in your project and add the following:
+
+```
+BACKEND = {
+	'name':'simplekv',
+	'store':'<path.to.KeyValueStore.subclass>',
+	'arg1':'<additional arg needed to instanciate store>'
+}
+```
+
+an example using `simplekv.fs.FilesystemStore`
+```
+BACKEND = {
+	'name':'simplekv',
+	'store':simplekv.fs.FilesystemStore',
+	'root':'/tmp'
+}
+```
+
+then from you project startup call:
+
+	from fndb.config import settings
+	settings.from_object('path.to.your.project.config')
+
+### Reconfigure backend on the fly
+
+If you need to change which backend you're using on the fly, you need to do the following
+
+	from fndb.backend import backend
+	backend.reconfigure()
+
+### Things missing
 
  * A LOT! (pretty much everything)
 

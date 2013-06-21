@@ -13,7 +13,7 @@ import copy
 import datetime
 import uuid
 
-from fndb import backend
+from fndb.backend import backend
 
 from . import key as key_module
 Key = key_module.Key # For export
