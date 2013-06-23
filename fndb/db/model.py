@@ -410,21 +410,15 @@ class Model(object):
         return cls.__name__
 
     def put(self):
-        if self._key is None or self._key.id is None:
-            key = (self._get_kind(), None) if self._key is None else self._key.flat()
-            while True:
-                key = key[:-1] + (str(uuid.uuid1()),)
-                self._key = Key(*key)
-                # make sure the key doesn't already exist
-                if backend.get(self._key) is None:
-                    break
+        if self._key is None:
+            self._key = Key(self._get_kind(), None)
         val = {}
         for name, prop in sorted(self._properties.iteritems()):
             prop._pre_put(self)
             val[name] = prop._get_value(self)
             if prop._required and val[name] is None:
                 raise ValueError('Entity has uninitialized properties: %s' % name)
-        backend.put(self._key, val)
+        self._key = backend.put(self._key, val)
         return self
 
     @classmethod

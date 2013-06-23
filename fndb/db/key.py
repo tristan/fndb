@@ -99,7 +99,7 @@ class Key(object):
         return mdl
 
     def __repr__(self):
-        return 'Key(%s)' % ', '.join(self.flat())
+        return 'Key(%s)' % ', '.join(str(i) for i in self.flat())
 
     def __eq__(self, other):
         if not isinstance(other, Key):

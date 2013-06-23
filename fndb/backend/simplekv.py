@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 from importlib import import_module
 from fndb.config import settings
-from fndb.backend import BackendBase
+from fndb.backend import BackendBase, utils
 from simplekv import KeyValueStore
 from fndb.db import Key
 import cPickle as pickle
+from dict import dump_key, load_key
 
 class BackendWrapper(BackendBase):
     def __init__(self, name=None, store=None, **kwargs):
@@ -27,15 +28,13 @@ class BackendWrapper(BackendBase):
                              % store)
         self.store = store
     def get(self, key):
-        key = '.'.join(key.flat())
         try:
-            return pickle.loads(self.store.get(key))
+            return pickle.loads(self.store.get(dump_key(key)))
         except KeyError:
             return None
     def put(self, key, value):
-        key = '.'.join(key.flat())
-        self.store.put(key, pickle.dumps(value))
+        key = utils.validate_key(key)
+        self.store.put(dump_key(key), pickle.dumps(value))
+        return key
     def keys(self):
-        return [Key(*k) for k in 
-                [k.split('.') for k in self.store.iter_keys()]
-                if len(k) % 2 == 0]
+        return filter(None, [load_key(k) for k in self.store.iter_keys()])

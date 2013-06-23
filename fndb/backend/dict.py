@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from fndb.config import settings
-from fndb.backend import BackendBase
+from fndb.backend import BackendBase, utils
 from fndb.db import Key
 import cPickle as pickle
 from collections import OrderedDict
@@ -18,14 +18,28 @@ class BackendWrapper(BackendBase):
         else:
             self.store = OrderedDict()
     def get(self, key):
-        key = '.'.join(key.flat())
-        return self.store.get(key)
+        return self.store.get(dump_key(key))
     def put(self, key, value):
-        key = '.'.join(key.flat())
-        self.store[key] = value
+        key = utils.validate_key(key)
+        self.store[dump_key(key)] = value
         if self.pickle_file is not None:
             pickle.dump(self.store, self.pickle_file)
+        return key
     def keys(self):
-        return [Key(*k) for k in 
-                [k.split('.') for k in self.store.iterkeys()]
-                if len(k) % 2 == 0]
+        return filter(None, [load_key(k) for k in self.store.iterkeys()])
+
+def dump_key(key):
+    return '.'.join("{0}.{1}{2}".format(
+        k, 'I' if isinstance(i, (int, long)) else 'S', i
+    ) for k,i in key.pairs())
+
+def load_key(key):
+    a = key.split('.')
+    if len(a) % 2 > 0:
+        return None
+    flat = []
+    for k, i in zip(a[:-1:2], a[1::2]):
+        cls = int if i[0] == 'I' else str
+        i = cls(i[1:])
+        flat.extend([k, i])
+    return Key(*flat)

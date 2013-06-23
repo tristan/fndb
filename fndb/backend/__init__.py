@@ -6,6 +6,8 @@ class BackendBase(object):
         raise NotImplementedError
 
     def put(self, key, value):
+        """Writes the key:value pair to the backend, generating an ID if key.id is None
+        and returns the resulting key"""
         raise NotImplementedError
 
     def keys(self):
