@@ -36,10 +36,21 @@ then from you project startup call:
 
 ### Reconfigure backend on the fly
 
-If you need to change which backend you're using on the fly, you need to do the following
+If you need to change which backend you're using on the fly, you need to do the following (I found I wanted this functionality for clearning the datastore inbetween tests)
 
 	from fndb.backend import backend
 	backend.reconfigure()
+
+### Enabling GAE NDB classes without changing namespaces
+
+If you want to switch in the GAE's NDB classes without having to change all your namespaces use:
+
+	from fndb import ndb
+	ndb.enable()
+
+Additionally you can set up the dev GAE datastores used by `dev_appserver.py` outside of the GAE dev environment by calling:
+
+	ndb.setup_stubs(app_id, app_path, storage_path)
 
 ### Things missing
 
