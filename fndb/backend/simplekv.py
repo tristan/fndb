@@ -5,7 +5,7 @@ from fndb.backend import BackendBase, utils
 from simplekv import KeyValueStore
 from fndb.db import Key
 import cPickle as pickle
-from dict import dump_key, load_key
+from .dict import dump_key, load_key
 
 class BackendWrapper(BackendBase):
     def __init__(self, name=None, store=None, **kwargs):
