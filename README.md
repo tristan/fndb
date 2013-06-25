@@ -1,6 +1,14 @@
 # Fake NDB
 
-I wanted the interface to the Google App Engine's NDB without having to run the GAE. Why? Because I'm weird... I'm unsure at the moment which platform I want to deploy some apps I'm working on, found the ndb model intriguing, and decided I wanted to work with it without depending on a large chunk of the GAE code (but while being able to fall back on it if I end up working on it). My hope is that if I choose something else then I can build a `Backend` to use this with it, and that this hasn't lost too much of whatever robustness and speed the ndb has.
+I wanted the interface to the Google App Engine's NDB without having to run the GAE. Why? Because I'm weird... I'm unsure at the moment which platform I want to deploy some apps I'm working on, found the ndb model intriguing, and decided I wanted to work with it without depending on a large chunk of the GAE code (but while being able to fall back on it if I end up working on it).
+
+After managing to enter the right things into google and finding the right parts in the sdk code I was able to figure out how to use the ndb code and the backend services used by the `dev_appserver.py` outside of the `dev_appserver.py` environment. This easily enables all the functionality of the NDB while allowing you to use whatever development server you want (e.g. behind mod_wsgi).
+
+I'm yet to figure out what the performance limitations of this are. A lot of the GAE api stub code has comments like:
+> Stubs may be either trivial implementations of APIProxy services (e.g.
+>  DatastoreFileStub, UserServiceStub) or "real" implementations.
+
+Which to me `"real"` in quotes makes it seem like they're probably still much more trivial implementations of the APIProxy services than what you would get in production running on google's servers.
 
 ### Setup
 
@@ -51,6 +59,11 @@ If you want to switch in the GAE's NDB classes without having to change all your
 Additionally you can set up the dev GAE datastores used by `dev_appserver.py` outside of the GAE dev environment by calling:
 
 	ndb.setup_stubs(app_id, app_path, storage_path)
+
+Note that for the above to work, the GAE SDK and its associated libraries needs to be on your python path. An easy way to do this is to use a `.pth` file in your `site-packages` e.g. create a file `/path/to/python/site-packages/gae.pth` containing the following:
+
+	/path/to/google_appengine_sdk
+	import dev_appserver; dev_appserver.fix_sys_paths()
 
 ### Things missing
 
